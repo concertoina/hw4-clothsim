@@ -26,11 +26,13 @@ float h(vec2 uv) {
 
 void main() {
   // YOUR CODE HERE
-  
-  // (Placeholder code. You will want to replace it.)
-  v_position = u_model * in_position;
-  v_normal = normalize(u_model * in_normal);
+  vec4 displaced_position =
+      in_position + vec4(normalize(in_normal.xyz) * h(in_uv) * u_height_scaling, 0.0);
+
+  v_position = u_model * displaced_position;
+  v_normal = u_model * vec4(normalize(in_normal.xyz), 0.0);
+  v_tangent = u_model * vec4(normalize(in_tangent.xyz), 0.0);
   v_uv = in_uv;
-  v_tangent = normalize(u_model * in_tangent);
-  gl_Position = u_view_projection * u_model * in_position;
+
+  gl_Position = u_view_projection * v_position;
 }

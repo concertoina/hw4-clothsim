@@ -12,6 +12,31 @@ using namespace CGL;
 
 void Plane::collide(PointMass &pm) {
   // TODO (Part 3): Handle collisions with planes.
+  //check which side of the plane we are on.
+  double old_side = dot(pm.last_position - point, normal);
+  double new_side = dot(pm.position - point, normal);
+
+  // Crossed the plane if signs differ
+  if (old_side * new_side <= 0) {
+    Vector3D direction = pm.position - pm.last_position;
+
+    // tangent_point where line segment intersects plane
+    double t = dot(point - pm.last_position, normal) / dot(direction, normal);
+
+    Vector3D tangent_point = pm.last_position + t * direction;
+
+    Vector3D offset = normal * SURFACE_OFFSET;
+
+    if (old_side < 0) {
+      offset = -offset;
+    }
+
+    Vector3D target_position = tangent_point + offset;
+
+    Vector3D correction = target_position - pm.last_position;
+
+    pm.position = pm.last_position + correction * (1.0 - friction);
+  }
 
 }
 

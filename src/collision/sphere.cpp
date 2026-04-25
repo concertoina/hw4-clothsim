@@ -9,6 +9,16 @@ using namespace CGL;
 
 void Sphere::collide(PointMass &pm) {
   // TODO (Part 3): Handle collisions with spheres.
+  Vector3D dir = pm.position - origin;
+  double dist = dir.norm();
+
+  if (dist <= radius) {
+    Vector3D tangent_point = origin + dir.unit() * radius;
+
+    Vector3D correction = tangent_point - pm.last_position;
+
+    pm.position = pm.last_position + correction * (1.0 - friction);
+  }
 
 }
 
